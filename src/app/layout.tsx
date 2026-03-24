@@ -12,6 +12,7 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+// ✅ 메타데이터는 한 번만!
 export const metadata: Metadata = {
   title: "Dilema - Tu Elección",
   description: "Vota por tu opción favorita",
@@ -25,7 +26,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* 💰 Monetag Vignette Ads - 수훈님 전용 코드 */}
+        {/* 🔔 1. 푸시 알림 태그 (알림 허용) */}
+        <script src="https://5gvci.com/act/files/tag.min.js?z=10781241" data-cfasync="false" async></script>
+
+        {/* 💰 2. 전면 광고 태그 (Vignette) */}
         <script
           dangerouslySetInnerHTML={{
             __html: `(function(s){s.dataset.zone='10781221',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
