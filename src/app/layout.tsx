@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Dilema - Tu Elección", // 제목도 살짝 바꿔봤어요!
+  title: "Dilema - Tu Elección",
   description: "Vota por tu opción favorita",
 };
 
@@ -23,8 +23,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // 바로 아래 줄에 suppressHydrationWarning을 추가했습니다!
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* 💰 Monetag Vignette Ads - 수훈님 전용 코드 */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(s){s.dataset.zone='10781221',s.src='https://izcle.com/vignette.min.js'})([document.documentElement, document.body].filter(Boolean).pop().appendChild(document.createElement('script')))`,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
