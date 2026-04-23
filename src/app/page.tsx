@@ -8,7 +8,7 @@ import { supabase } from './lib/supabase';
 const CATEGORIES = ['전체', '경제', '부동산', '정치', '사회', '복지'];
 
 export default function BalanciaHomePage() {
-  const [isMounted, setIsMounted] = useState(false); // 하이드레이션 방지
+  const [isMounted, setIsMounted] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [activeTab, setActiveTab] = useState('전체');
   const [searchTerm, setSearchTerm] = useState('');
@@ -16,12 +16,10 @@ export default function BalanciaHomePage() {
   const [hotPolls, setHotPolls] = useState<any[]>([]);
   const [categoryPolls, setCategoryPolls] = useState<any[]>([]);
 
-  // 1. 컴포넌트 마운트 체크
   useEffect(() => {
     setIsMounted(true);
   }, []);
 
-  // 2. 데이터 페칭 (탭이나 검색어 바뀔 때마다)
   useEffect(() => {
     if (isMounted) {
       fetchMainData();
@@ -30,7 +28,6 @@ export default function BalanciaHomePage() {
 
   const fetchMainData = async () => {
     try {
-      // HOT 섹션 (최근 7일로 확장해서 데이터 잘 나오게 수정)
       const sevenDaysAgo = new Date();
       sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
       
@@ -42,7 +39,6 @@ export default function BalanciaHomePage() {
         .limit(3);
       if (hotData) setHotPolls(hotData);
 
-      // 카테고리별 + 검색 필터 쿼리
       let query = supabase.from('balancia_polls').select('*');
       
       if (activeTab !== '전체') {
@@ -53,7 +49,8 @@ export default function BalanciaHomePage() {
         query = query.ilike('title', `%${searchTerm}%`);
       }
 
-      const { data: catData } = await query.order('created_at', { ascending: false }).limit(10);
+      // 테마별 법안 5개로 제한
+      const { data: catData } = await query.order('created_at', { ascending: false }).limit(5);
       if (catData) setCategoryPolls(catData);
       
     } catch (error) {
@@ -63,7 +60,6 @@ export default function BalanciaHomePage() {
     }
   };
 
-  // 하이드레이션 완료 전엔 빈 화면 대신 기본 배경만 출력
   if (!isMounted) return <div className="max-w-md mx-auto min-h-screen bg-[#F8F9FA]" />;
 
   return (
@@ -90,7 +86,7 @@ export default function BalanciaHomePage() {
         </div>
       </header>
 
-      {/* HOT SECTION */}
+      {/* HOT SECTION - 위아래 폭 축소 */}
       <section className={`px-6 mb-10 transition-all duration-700 delay-200 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
@@ -99,14 +95,15 @@ export default function BalanciaHomePage() {
           </div>
         </div>
         
-        <div className="space-y-4">
+        <div className="space-y-3">
           {hotPolls.map((poll) => (
             <Link key={poll.id} href={`/vote/${poll.id}`}>
-              <div className="bg-white p-6 rounded-[32px] shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-gray-50 active:scale-[0.98] transition-all relative overflow-hidden group">
-                <div className="flex flex-col gap-2">
-                  <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{poll.category} · {poll.status}</span>
-                  <span className="text-lg font-[1000] leading-tight uppercase break-keep pr-4">{poll.title}</span>
-                  <span className="text-[11px] font-bold text-gray-400 uppercase mt-1">{poll.proposer_party} · {poll.proposer_name} 의원</span>
+              {/* p-6에서 py-4로 높이 축소 */}
+              <div className="bg-white px-6 py-4 rounded-[28px] shadow-[0_4px_20px_rgb(0,0,0,0.03)] border border-gray-50 active:scale-[0.98] transition-all relative overflow-hidden group">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[9px] font-black text-orange-500 uppercase tracking-widest">{poll.category} · {poll.status}</span>
+                  <span className="text-[16px] font-[1000] leading-tight uppercase break-keep pr-4">{poll.title}</span>
+                  <span className="text-[10px] font-bold text-gray-400 uppercase">{poll.proposer_party} · {poll.proposer_name}</span>
                 </div>
               </div>
             </Link>
